@@ -1,0 +1,36 @@
+
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <meta charset="utf-8">
+    <title>Symfony collection demo</title>
+    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="symfony-collection.html">
+    <style>
+        #container {
+            padding-top: 15%;
+            text-align: center;
+        }
+
+        div[symfony-collection-item] {
+            background-color: #ccc;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body unresolved>
+
+<div id="container">
+    <h1><code>Symfony collection with polymer</code> in action:</h1>
+
+    <symfony-collection data-prototype="<div symfony-collection-item id=&quot;index___name_____name__&quot;>image<br/><button type=&quot;button&quot; symfony-collection-remove>remove</button></div>">
+        <div symfony-collection-item id="index_0___name__">image<br/><button type="button" symfony-collection-remove>remove</button></div>
+        <div symfony-collection-item id="index_1___name__">image<br/><button type="button" symfony-collection-remove>remove</button></div>
+        <div symfony-collection-item id="index_2___name__">image<br/><button type="button" symfony-collection-remove>remove</button></div>
+    </symfony-collection>
+</div>
+</body>
+</html>
