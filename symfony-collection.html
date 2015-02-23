@@ -49,10 +49,13 @@
                     } else {
                         parent = this.getParents(event.target, this.itemAttr);
                     }
-                    parent.parentNode.removeChild(parent);
 
-                    //this.index -= 1;
-                    this.fetchItems();
+                    if (parent) {
+                        parent.parentNode.removeChild(parent);
+
+                        //this.index -= 1;
+                        this.fetchItems();
+                    }
                 }
             },
 
