@@ -39,10 +39,16 @@
              * Remove action
              */
             onRemove: function(event) {
-                if (null !== event.target.getAttribute(this.removeAttr)) {
+                var selector = event.target.getAttribute(this.removeAttr);
+                if (null !== selector) {
                     event.preventDefault();
 
-                    var parent = this.getParents(event.target, this.itemAttr);
+                    var parent;
+                    if (selector) {
+                        parent = document.querySelector(selector);
+                    } else {
+                        parent = this.getParents(event.target, this.itemAttr);
+                    }
                     parent.parentNode.removeChild(parent);
 
                     //this.index -= 1;
