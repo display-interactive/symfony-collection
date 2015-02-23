@@ -3,7 +3,7 @@
 <polymer-element name="symfony-collection" on-click="{{onRemove}}" attributes="addText prototypeAttr itemAttr removeAttr maxLength">
     <template>
         <content></content>
-        <button type="button" on-click={{addChild}} id="sfAddButton">{{addText}}</button>
+        <button type="button" on-click={{addChild}} class="symfony-collection-button">{{addText}}</button>
     </template>
     <script>
         Polymer('symfony-collection', {
