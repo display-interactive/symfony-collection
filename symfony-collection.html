@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="symfony-collection" on-click="{{onRemove}}" attributes="addText prototypeAttr itemAttr removeAttr maxLength">
+<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttr itemAttr removeAttr maxLength">
     <template>
         <content></content>
-        <button type="button" on-click={{addChild}} class="symfony-collection-button">{{addText}}</button>
+        <button type="button" on-tap={{addChild}} class="symfony-collection-button">{{addText}}</button>
     </template>
     <script>
         Polymer('symfony-collection', {
