@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttr prototypeProp itemAttr removeAttr maxLength">
+<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttribute prototypeProperty itemSelector itemAttribute removeAttribute maxLength">
     <template>
         <content></content>
         <button type="button" on-tap={{addChild}} class="symfony-collection-button">{{addText}}</button>
@@ -12,22 +12,20 @@
              */
             'data-prototype': null,
             addText: 'Add',
-            prototypeAttr: 'data-prototype',
-            prototypeProp: '__name__',
-            itemAttr: 'symfony-collection-item',
-            removeAttr: 'symfony-collection-remove',
+            prototypeAttribute: 'data-prototype',
+            prototypeProperty: '__name__',
+            itemSelector: '[symfony-collection-item]',
+            itemAttribute: 'symfony-collection-item',
+            removeAttribute: 'symfony-collection-remove',
             maxLength: null,
 
             addFirstItem: true,
             addButton: null,
-            items: null,
-            index: 0,
 
             /**
              *
              */
             ready: function() {
-                this.fetchItems();
                 this.index = this.items.length;
 
                 if (this.addFirstItem && 0 === this.index) {
@@ -40,7 +38,7 @@
              * Remove action
              */
             onRemove: function(event) {
-                var selector = event.target.getAttribute(this.removeAttr);
+                var selector = event.target.getAttribute(this.removeAttribute);
                 if (null !== selector) {
                     event.preventDefault();
 
@@ -48,14 +46,12 @@
                     if (selector) {
                         parent = document.querySelector(selector);
                     } else {
-                        parent = this.getParents(event.target, this.itemAttr);
+                        parent = this.getParents(event.target, this.itemAttribute);
                     }
 
                     if (parent) {
                         parent.parentNode.removeChild(parent);
-
                         //this.index -= 1;
-                        this.fetchItems();
                     }
                 }
             },
@@ -64,28 +60,26 @@
              * Add a child markup to the collection
              */
             addChild: function() {
-                if (this.maxLength && this.index >= this.maxLength) return;
+                if (this.maxLength && this.items.length >= this.maxLength) return;
 
-                //this.items = this.container.find(this.options.items);
                 //get prototype markup, parse it
-                //var item = $(prototype.replace(/__name__/g, this.index));
-                var re = new RegExp(this.prototypeProp, 'g');
-                var html = this.replace(re, this.getAttribute(this.prototypeAttr), this.index);
+                var re = new RegExp(this.prototypeProperty, 'g');
+                var html = this.replace(re, this.getAttribute(this.prototypeAttribute), this.index);
                 var item = this.createNode(html);
 
                 //increment index
                 this.index += 1;
                 //add to html and add display it
                 this.appendChild(item);
-                //update Items
-                this.fetchItems();
             },
 
             /**
              * Fetch items in the container
+             *
+             * @property items
              */
-            fetchItems: function() {
-                this.items = this.querySelectorAll('['+this.itemAttr+']');
+            get items() {
+                return this.querySelectorAll(this.itemSelector);
             },
 
             /**
