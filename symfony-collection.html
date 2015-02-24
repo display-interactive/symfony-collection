@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttr itemAttr removeAttr maxLength">
+<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttr prototypeProp itemAttr removeAttr maxLength">
     <template>
         <content></content>
         <button type="button" on-tap={{addChild}} class="symfony-collection-button">{{addText}}</button>
@@ -13,6 +13,7 @@
             'data-prototype': null,
             addText: 'Add',
             prototypeAttr: 'data-prototype',
+            prototypeProp: '__name__',
             itemAttr: 'symfony-collection-item',
             removeAttr: 'symfony-collection-remove',
             maxLength: null,
@@ -68,7 +69,8 @@
                 //this.items = this.container.find(this.options.items);
                 //get prototype markup, parse it
                 //var item = $(prototype.replace(/__name__/g, this.index));
-                var html = this.replace(/__name__/g, this.getAttribute(this.prototypeAttr), this.index);
+                var re = new RegExp(this.prototypeProp, 'g');
+                var html = this.replace(re, this.getAttribute(this.prototypeAttr), this.index);
                 var item = this.createNode(html);
 
                 //increment index
