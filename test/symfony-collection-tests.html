@@ -33,13 +33,13 @@
             assert.equal(document.querySelectorAll('[symfony-collection-item]').length, el.items.length);
         });
 
-        test('add items', function() {
-            el.addChild();
+        test('add item', function() {
+            el.addItem();
             assert.equal(4, el.items.length);
         });
 
-        test('remove items', function() {
-            el.onRemove({
+        test('remove item', function() {
+            el.removeItem({
                 preventDefault: function() {},
                 target: document.querySelector('button[symfony-collection-remove]')
             });

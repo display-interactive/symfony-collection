@@ -1,22 +1,21 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="symfony-collection" on-tap="{{onRemove}}" attributes="addText prototypeAttribute prototypeProperty itemSelector itemAttribute removeAttribute maxLength">
+<polymer-element name="symfony-collection" on-tap="{{removeItem}}" attributes="addText prototypeAttribute prototypeProperty itemSelector itemAttribute deleteAttribute maxLength">
     <template>
         <content></content>
-        <button type="button" on-tap={{addChild}} class="symfony-collection-button">{{addText}}</button>
+        <button type="button" on-tap={{addItem}} class="symfony-collection-button">{{addText}}</button>
     </template>
     <script>
         Polymer('symfony-collection', {
             /**
              * Required
              */
-            'data-prototype': null,
             addText: 'Add',
             prototypeAttribute: 'data-prototype',
             prototypeProperty: '__name__',
             itemSelector: '[symfony-collection-item]',
             itemAttribute: 'symfony-collection-item',
-            removeAttribute: 'symfony-collection-remove',
+            deleteAttribute: 'symfony-collection-remove',
             maxLength: null,
 
             addFirstItem: true,
@@ -30,15 +29,15 @@
 
                 if (this.addFirstItem && 0 === this.index) {
                     //add the markup and listeners for the new child
-                    this.addChild();
+                    this.addItem();
                 }
             },
 
             /**
              * Remove action
              */
-            onRemove: function(event) {
-                var selector = event.target.getAttribute(this.removeAttribute);
+            removeItem: function(event) {
+                var selector = event.target.getAttribute(this.deleteAttribute);
                 if (null !== selector) {
                     event.preventDefault();
 
@@ -59,13 +58,13 @@
             /**
              * Add a child markup to the collection
              */
-            addChild: function() {
+            addItem: function() {
                 if (this.maxLength && this.items.length >= this.maxLength) return;
 
                 //get prototype markup, parse it
                 var re = new RegExp(this.prototypeProperty, 'g');
                 var html = this.replace(re, this.getAttribute(this.prototypeAttribute), this.index);
-                var item = this.createNode(html);
+                var item = this.createNodeFromString(html);
 
                 //increment index
                 this.index += 1;
@@ -95,17 +94,17 @@
              */
             replace: function(reg, prototype, index) {
                 var res = null,
-                        founded = [],
-                        key
-                        ;
+                    founded = [],
+                    key
+                ;
 
                 do {
                     res = reg.exec(prototype);
 
                     if (null != res) {
-                        var startIndex = this._findIndex(prototype, res.index, 1),
-                                endIndex = this._findIndex(prototype, res.index, -1)
-                                ;
+                        var startIndex = this.findIndex(prototype, res.index, 1),
+                            endIndex = this.findIndex(prototype, res.index, -1)
+                        ;
 
                         founded[startIndex+'-'+endIndex] = prototype.substring(startIndex, endIndex);
                     }
@@ -127,7 +126,7 @@
              * @returns {Number}
              * @private
              */
-            _findIndex: function(prototype, index, add) {
+            findIndex: function(prototype, index, add) {
                 var char = null;
                 var sequence = '';
 
@@ -152,7 +151,7 @@
              * Create node from string
              * @private
              */
-            createNode: function(markup) {
+            createNodeFromString: function(markup) {
                 var container = document.createElement('div');
                 container.innerHTML = markup;
 
