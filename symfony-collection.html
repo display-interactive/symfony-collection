@@ -1,183 +1,218 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="symfony-collection" on-tap="{{removeItem}}" attributes="addText prototypeAttribute prototypeProperty itemSelector itemAttribute deleteAttribute maxLength">
+<dom-module id="symfony-collection">
     <template>
-        <content></content>
-        <button type="button" on-tap={{addItem}} class="symfony-collection-button">{{addText}}</button>
+        <content id="scContent"></content>
+        <button type="button" on-tap="addItem" class="symfony-collection-button">{{addText}}</button>
     </template>
-    <script>
-        Polymer('symfony-collection', {
+</dom-module>
+<script>
+    Polymer({
+        is: 'symfony-collection',
+
+        properties: {
             /**
              * Required
              */
-            addText: 'Add',
-            prototypeAttribute: 'data-prototype',
-            prototypeProperty: '__name__',
-            itemSelector: '[symfony-collection-item]',
-            itemAttribute: 'symfony-collection-item',
-            deleteAttribute: 'symfony-collection-remove',
-            maxLength: null,
-
-            addFirstItem: true,
-            addButton: null,
-
-            /**
-             *
-             */
-            ready: function() {
-                this.index = this.items.length;
-
-                if (this.addFirstItem && 0 === this.index) {
-                    //add the markup and listeners for the new child
-                    this.addItem();
-                }
+            addText: {
+                type: 'String',
+                value: 'Add'
             },
-
-            /**
-             * Remove action
-             */
-            removeItem: function(event) {
-                var selector = event.target.getAttribute(this.deleteAttribute);
-                if (null !== selector) {
-                    event.preventDefault();
-
-                    var parent;
-                    if (selector) {
-                        parent = document.querySelector(selector);
-                    } else {
-                        parent = this.getParents(event.target, this.itemAttribute);
-                    }
-
-                    if (parent) {
-                        parent.parentNode.removeChild(parent);
-                        //this.index -= 1;
-                    }
-                }
+            prototypeAttribute: {
+                type: 'String',
+                value: 'data-prototype'
             },
-
-            /**
-             * Add a child markup to the collection
-             */
-            addItem: function() {
-                if (this.maxLength && this.items.length >= this.maxLength) return;
-
-                //get prototype markup, parse it
-                var re = new RegExp(this.prototypeProperty, 'g');
-                var html = this.replace(re, this.getAttribute(this.prototypeAttribute), this.index);
-                var item = this.createNodeFromString(html);
-
-                //increment index
-                this.index += 1;
-                //add to html and add display it
-                this.appendChild(item);
+            prototypeProperty: {
+                type: 'String',
+                value: '__name__'
             },
-
-            /**
-             * Fetch items in the container
-             *
-             * @property items
-             */
-            get items() {
-                return this.querySelectorAll(this.itemSelector);
+            itemSelector: {
+                type: 'String',
+                value: '[symfony-collection-item]'
             },
-
-            /**
-             * Replace the reg just one time by property
-             * eq: blabla___name___blabla___name___ > blabla_1_blabla___name___
-             * todo: do it better...
-             *
-             * @param {RegExp} reg
-             * @param {String} prototype
-             * @param {Number} index
-             * @returns {*}
-             * @private
-             */
-            replace: function(reg, prototype, index) {
-                var res = null,
-                    founded = [],
-                    key
-                ;
-
-                do {
-                    res = reg.exec(prototype);
-
-                    if (null != res) {
-                        var startIndex = this.findIndex(prototype, res.index, 1),
-                            endIndex = this.findIndex(prototype, res.index, -1)
-                        ;
-
-                        founded[startIndex+'-'+endIndex] = prototype.substring(startIndex, endIndex);
-                    }
-                } while (null !== res && res.length > 0);
-
-                for (key in founded) {
-                    prototype = prototype.replace(founded[key], founded[key].replace(/__name__/, index));
-                }
-
-                return prototype;
+            itemAttribute: {
+                type: 'String',
+                value: 'symfony-collection-item'
             },
-
-            /**
-             * We try to find string like "blabla" or &quot;blabla&quot;
-             *
-             * @param {String} prototype
-             * @param {Number} index
-             * @param {Number} add
-             * @returns {Number}
-             * @private
-             */
-            findIndex: function(prototype, index, add) {
-                var char = null;
-                var sequence = '';
-
-                do {
-                    char = prototype[index];
-                    sequence += char;
-                    if (sequence.length >= 7) {
-                        sequence = sequence.substr(1, sequence.length)
-                    }
-
-                    if (char === '"' || sequence === ';touq&' || sequence === '&quot;') {
-                        break;
-                    }
-
-                    index = index + add;
-                } while (1);
-
-                return index;
+            deleteAttribute: {
+                type: 'String',
+                value: 'symfony-collection-remove'
             },
-
-            /**
-             * Create node from string
-             * @private
-             */
-            createNodeFromString: function(markup) {
-                var container = document.createElement('div');
-                container.innerHTML = markup;
-
-                return container.firstChild;
+            maxLength: {
+                type: 'Number',
+                value: null
             },
-
-            /**
-             * Get parent form
-             *
-             * @return {HTMLElement}
-             * @private
-             */
-            getParents: function(element, attribute) {
-                var p = element.parentNode, o;
-
-                while (p !== null) {
-                    o = p;
-                    if (null !== o.getAttribute(attribute)) {
-                        return o;
-                    }
-
-                    p = o.parentNode;
-                }
-
-                return null;
+            addFirstItem: {
+                type: 'Boolean',
+                value: true
+            },
+            addButton: {
+                type: 'String',
+                value: null
             }
-        });
-    </script>
-</polymer-element>
+        },
+
+        listeners: {
+            'tap': 'removeItem'
+        },
+
+
+        /**
+         *
+         */
+        ready: function() {
+            this.index = this.items.length;
+
+            if (this.addFirstItem && 0 === this.index) {
+                //add the markup and listeners for the new child
+                this.addItem();
+            }
+        },
+
+        /**
+         * Remove action
+         */
+        removeItem: function(event) {
+            var selector = event.target.getAttribute(this.deleteAttribute);
+            if (null !== selector) {
+                event.preventDefault();
+
+                var parent;
+                if (selector) {
+                    parent = document.querySelector(selector);
+                } else {
+                    parent = this.getParents(event.target, this.itemAttribute);
+                }
+
+                if (parent) {
+                    Polymer.dom(parent.parentNode).removeChild(parent);
+                    //this.index -= 1;
+                }
+            }
+        },
+
+        /**
+         * Add a child markup to the collection
+         */
+        addItem: function() {
+            if (this.maxLength && this.items.length >= this.maxLength) return;
+
+            //get prototype markup, parse it
+            var re = new RegExp(this.prototypeProperty, 'g');
+            var html = this.replace(re, this.getAttribute(this.prototypeAttribute), this.index);
+            var item = this.createNodeFromString(html);
+
+            //increment index
+            this.index += 1;
+            //add to html and add display it
+            Polymer.dom(this).appendChild(item);
+        },
+
+        /**
+         * Fetch items in the container
+         *
+         * @property items
+         */
+        get items() {
+            return Polymer.dom(this).querySelectorAll(this.itemSelector);
+        },
+
+        /**
+         * Replace the reg just one time by property
+         * eq: blabla___name___blabla___name___ > blabla_1_blabla___name___
+         * todo: do it better... I really don't like this code but i haven't found an elegant way
+         *
+         * @param {RegExp} reg
+         * @param {String} prototype
+         * @param {Number} index
+         * @returns {*}
+         * @private
+         */
+        replace: function(reg, prototype, index) {
+            var res = null,
+                founded = [],
+                key
+            ;
+
+            do {
+                res = reg.exec(prototype);
+
+                if (null != res) {
+                    var startIndex = this.findIndex(prototype, res.index, 1),
+                        endIndex = this.findIndex(prototype, res.index, -1)
+                    ;
+
+                    founded[startIndex+'-'+endIndex] = prototype.substring(startIndex, endIndex);
+                }
+            } while (null !== res && res.length > 0);
+
+            for (key in founded) {
+                prototype = prototype.replace(founded[key], founded[key].replace(/__name__/, index));
+            }
+
+            return prototype;
+        },
+
+        /**
+         * We try to find string like "blabla" or &quot;blabla&quot;
+         *
+         * @param {String} prototype
+         * @param {Number} index
+         * @param {Number} add
+         * @returns {Number}
+         * @private
+         */
+        findIndex: function(prototype, index, add) {
+            var char = null;
+            var sequence = '';
+
+            do {
+                char = prototype[index];
+                sequence += char;
+                if (sequence.length >= 7) {
+                    sequence = sequence.substr(1, sequence.length)
+                }
+
+                if (char === '"' || sequence === ';touq&' || sequence === '&quot;') {
+                    break;
+                }
+
+                index = index + add;
+            } while (1);
+
+            return index;
+        },
+
+        /**
+         * Create node from string
+         * @private
+         */
+        createNodeFromString: function(markup) {
+            var container = document.createElement('div');
+            container.innerHTML = markup;
+
+            return container.firstChild;
+        },
+
+        /**
+         * Get parent form
+         *
+         * @return {HTMLElement}
+         * @private
+         */
+        getParents: function(element, attribute) {
+            var p = element.parentNode, o;
+
+            while (p !== null) {
+                o = p;
+                if (null !== o.getAttribute(attribute)) {
+                    return o;
+                }
+
+                p = o.parentNode;
+            }
+
+            return null;
+        }
+    });
+</script>
