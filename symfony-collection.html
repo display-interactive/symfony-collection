@@ -2,7 +2,8 @@
 
 <dom-module id="symfony-collection">
     <template>
-        <content id="scContent"></content>
+        <content id="contentElement" select="[symfony-collection-item]"></content>
+        <span>[[itemSelector]]</span>
         <button type="button" on-tap="addItem" class="symfony-collection-button">{{addText}}</button>
     </template>
 </dom-module>
@@ -28,7 +29,8 @@
             },
             itemSelector: {
                 type: 'String',
-                value: '[symfony-collection-item]'
+                value: '[symfony-collection-item]',
+                notify: true
             },
             itemAttribute: {
                 type: 'String',
@@ -115,7 +117,8 @@
          * @property items
          */
         get items() {
-            return Polymer.dom(this).querySelectorAll(this.itemSelector);
+            return Polymer.dom(this.$.contentElement).getDistributedNodes();
+            //return Polymer.dom(this).querySelectorAll(this.itemSelector);
         },
 
         /**
