@@ -79,7 +79,8 @@
 
                 var parent;
                 if (selector) {
-                    parent = document.querySelector(selector);
+                    parent = Polymer.dom(document).querySelector(selector);
+                    //parent = document.querySelector(selector);
                 } else {
                     parent = this.getParents(event.target, this.itemAttribute);
                 }
