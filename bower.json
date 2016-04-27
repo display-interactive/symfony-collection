@@ -7,7 +7,6 @@
     "description": "Polymer Element to handle symfony collection",
     "main": "element/*",
     "ignore": [
-        "**/.*",
         "node_modules",
         "bower_components",
         "test",
