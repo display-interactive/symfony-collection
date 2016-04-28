@@ -5,9 +5,8 @@
         "Florian Roy"
     ],
     "description": "Polymer Element to handle symfony collection",
-    "main": "element/*",
+    "main": "symfony-collection.html",
     "ignore": [
-        "**/.*",
         "node_modules",
         "bower_components",
         "test",
